@@ -21,6 +21,9 @@ TV_SOURCES = [
     {'name': 'People', 'url': 'https://people.com/feed/'},
     # Болливуд
     {'name': 'Bollywood Hungama', 'url': 'https://www.bollywoodhungama.com/rss/news.xml'},
+    # Узбекистан доп
+    {'name': 'Kun.uz', 'url': 'https://kun.uz/news/rss'},
+    {'name': 'Turkish Drama', 'url': 'https://www.turkishdrama.com/feed/'},
 ]
 
 def collect_tv_news(max_per_source=3, hours=24):
