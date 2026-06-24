@@ -155,8 +155,6 @@ if __name__ == "__main__":
     print(bulletin)
     print("=" * 50)
     
-    save_bulletin(bulletin)
-    send_to_redakcia(bulletin)
 
 def send_to_redakcia(bulletin):
     import requests
@@ -178,3 +176,6 @@ def run_tv_agent():
     bulletin = generate_tv_bulletin(news_text)
     path = save_bulletin(bulletin)
     send_to_redakcia(bulletin)
+
+if __name__ == "__main__":
+    run_tv_agent()
