@@ -156,6 +156,7 @@ if __name__ == "__main__":
     print("=" * 50)
     
     save_bulletin(bulletin)
+    send_to_redakcia(bulletin)
 
 def send_to_redakcia(bulletin):
     import requests
