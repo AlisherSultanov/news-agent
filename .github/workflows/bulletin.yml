@@ -1,0 +1,24 @@
+name: TV Bulletin
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+    - cron: '0 7 * * *'
+    - cron: '0 10 * * *'
+    - cron: '0 13 * * *'
+    - cron: '0 16 * * *'
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install anthropic requests beautifulsoup4 feedparser python-dotenv
+      - run: python main_tv.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LUXTV_BOT_TOKEN: ${{ secrets.LUXTV_BOT_TOKEN }}
+          LUXTV_CHAT_ID: ${{ secrets.LUXTV_CHAT_ID }}
