@@ -1,28 +1,27 @@
-import feedparser
 import requests
-from datetime import datetime, timedelta
-from bs4 import BeautifulSoup
+import feedparser
+from datetime import datetime
 
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
 
 TV_SOURCES = [
-    # Узбекские СМИ
     {'name': 'Gazeta.uz', 'url': 'https://www.gazeta.uz/ru/rss/'},
     {'name': 'Podrobno.uz', 'url': 'https://podrobno.uz/rss/'},
     {'name': 'Uzdaily.uz', 'url': 'https://www.uzdaily.uz/en/rss'},
-    {'name': 'Sports.uz', 'url': 'https://sports.uz/ru/rss/'},
     {'name': 'NUZ.uz', 'url': 'https://nuz.uz/feed'},
-    # Мировой шоу-биз
+    {'name': 'Kun.uz', 'url': 'https://kun.uz/news/rss'},
+    {'name': 'Daryo.uz', 'url': 'https://daryo.uz/feed'},
+    {'name': 'Uzbekistan Today', 'url': 'https://ut.uz/ru/rss/'},
     {'name': 'Variety', 'url': 'https://variety.com/feed/'},
     {'name': 'Billboard', 'url': 'https://www.billboard.com/feed/'},
     {'name': 'Hollywood Reporter', 'url': 'https://www.hollywoodreporter.com/feed/'},
     {'name': 'TMZ', 'url': 'https://www.tmz.com/rss.xml'},
     {'name': 'Deadline', 'url': 'https://deadline.com/feed/'},
     {'name': 'People', 'url': 'https://people.com/feed/'},
-    # Болливуд
     {'name': 'Bollywood Hungama', 'url': 'https://www.bollywoodhungama.com/rss/news.xml'},
-    # Узбекистан доп
-    {'name': 'Kun.uz', 'url': 'https://kun.uz/news/rss'},
+    {'name': 'Pinkvilla', 'url': 'https://www.pinkvilla.com/rss'},
+    {'name': 'Koimoi', 'url': 'https://www.koimoi.com/feed/'},
+    {'name': 'Soompi', 'url': 'https://www.soompi.com/feed/'},
     {'name': 'Turkish Drama', 'url': 'https://www.turkishdrama.com/feed/'},
 ]
 
@@ -43,19 +42,14 @@ def collect_tv_news(max_per_source=3, hours=24):
                 link = entry.get('link', '')
                 summary = entry.get('summary', '')
                 published = entry.get('published', str(datetime.now()))
-
                 if title in seen_titles or not title:
                     continue
                 seen_titles.add(title)
-
-                if summary:
-                    summary = BeautifulSoup(summary, 'html.parser').get_text()[:300]
-
                 all_news.append({
                     'source': sname,
                     'title': title,
+                    'summary': summary[:300] if summary else '',
                     'link': link,
-                    'summary': summary,
                     'published': published
                 })
                 count += 1
