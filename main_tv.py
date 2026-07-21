@@ -7,7 +7,7 @@ load_dotenv()
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
-PROMPT = """Ты — редактор узбекского телевизионного шоу-биз выпуска «Yulduzlar Dunyosi» на LUX TV.
+PROMPT = """Ты — редактор узбекского телевизионного шоу-биз выпуска «Yulduzlar Dunyosidan» на LUX TV.
 Твоя задача — на основе предоставленных новостей собрать готовый выпуск: закадровый текст, источники, фото/видео рекомендации.
 
 ПАРАМЕТРЫ ВЫПУСКА:
@@ -45,7 +45,7 @@ Reuters ma'lumotiga ko'ra... / Rasmiiy manbalar xabar berishicha... / AP agentli
 ————————————————————————————
 [ЗАСТАВКА — 5 секунд]
 
-ОТКРЫТИЕ: «Yulduzlar Dunyosi. Boshlaylik.»
+ОТКРЫТИЕ: «Yulduzlar Dunyosidan. Boshlaylik.»
 
 НОВОСТЬ 1
 НОВОСТЬ 2
@@ -53,7 +53,7 @@ Reuters ma'lumotiga ko'ra... / Rasmiiy manbalar xabar berishicha... / AP agentli
 НОВОСТЬ 4
 НОВОСТЬ 5
 
-ЗАКРЫТИЕ: «Yulduzlar Dunyosi. Ko'rishguncha.»
+ЗАКРЫТИЕ: «Yulduzlar Dunyosidan. Ko'rishguncha.»
 [ЗАСТАВКА — 5 секунд]
 ————————————————————————————
 
