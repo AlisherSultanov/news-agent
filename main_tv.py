@@ -145,9 +145,30 @@ def send_to_redakcia(bulletin):
         print(r.json())
     print("✅ Выпуск отправлен в редакцию!")
 
+def get_seen_titles():
+    import json
+    from datetime import date
+    fname = f"seen_titles_{date.today()}.json"
+    try:
+        with open(fname, 'r') as f:
+            return set(json.load(f))
+    except:
+        return set()
+
+def save_seen_titles(titles):
+    import json
+    from datetime import date
+    fname = f"seen_titles_{date.today()}.json"
+    with open(fname, 'w') as f:
+        json.dump(list(titles), f)
+
 def run_tv_agent():
     from collector_tv import collect_tv_news, format_tv_for_agent
-    news = collect_tv_news()
+    seen = get_seen_titles()
+    all_news = collect_tv_news()
+    news = [n for n in all_news if n['title'] not in seen]
+    new_titles = {n['title'] for n in news}
+    save_seen_titles(seen | new_titles)
     news_text = format_tv_for_agent(news)
     bulletin = generate_tv_bulletin(news_text)
     path = save_bulletin(bulletin)
