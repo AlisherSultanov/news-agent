@@ -80,7 +80,10 @@ Reuters ma'lumotiga ko'ra... / Rasmiiy manbalar xabar berishicha... / AP agentli
 ⚠️ Если среди новостей нет подходящего шоу-биз контента — напиши об этом явно и объясни почему каждая новость не подходит. Не составляй выпуск из неподходящих новостей."""
 
 def generate_tv_bulletin(news_text):
-    message = client.messages.create(
+    import time
+    for attempt in range(3):
+        try:
+            message = client.messages.create(
         model="claude-opus-4-5",
         max_tokens=4000,
         messages=[
@@ -90,6 +93,13 @@ def generate_tv_bulletin(news_text):
             }
         ]
     )
+            break
+        except Exception as e:
+            if '529' in str(e) or 'overloaded' in str(e).lower():
+                print(f'Anthropic перегружен, попытка {attempt+1}/3, ждём 30 сек...')
+                time.sleep(30)
+            else:
+                raise
     return message.content[0].text
 
 def save_bulletin(bulletin):
