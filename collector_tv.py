@@ -10,12 +10,10 @@ TV_SOURCES = [
     {'name': 'Hollywood Reporter', 'url': 'https://www.hollywoodreporter.com/feed/'},
     {'name': 'TMZ', 'url': 'https://www.tmz.com/rss.xml'},
     {'name': 'Deadline', 'url': 'https://deadline.com/feed/'},
-    {'name': 'People', 'url': 'https://people.com/feed/'},
     {'name': 'Bollywood Hungama', 'url': 'https://www.bollywoodhungama.com/rss/news.xml'},
-    {'name': 'Pinkvilla', 'url': 'https://www.pinkvilla.com/rss'},
     {'name': 'Koimoi', 'url': 'https://www.koimoi.com/feed/'},
     {'name': 'Soompi', 'url': 'https://www.soompi.com/feed/'},
-    {'name': 'Turkish Drama', 'url': 'https://www.turkishdrama.com/feed/'},
+    {'name': 'Turkish Drama World', 'url': 'https://turkishdramaworld.com/feed/'},
 ]
 
 def collect_tv_news(max_per_source=3, hours=24):
