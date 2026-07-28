@@ -166,6 +166,12 @@ def run_tv_agent():
     save_seen_titles(seen | new_titles)
     news_text = format_tv_for_agent(news)
     bulletin = generate_tv_bulletin(news_text)
+
+    attempt = 1
+    while bulletin.count("(RU)") < 10 and attempt < 3:
+        bulletin = generate_tv_bulletin(news_text)
+        attempt += 1
+
     path = save_bulletin(bulletin)
     send_to_redakcia(bulletin)
 
