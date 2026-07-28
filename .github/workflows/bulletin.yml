@@ -21,5 +21,6 @@ jobs:
       - run: python main_tv.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           LUXTV_BOT_TOKEN: ${{ secrets.LUXTV_BOT_TOKEN }}
           LUXTV_CHAT_ID: ${{ secrets.LUXTV_CHAT_ID }}
