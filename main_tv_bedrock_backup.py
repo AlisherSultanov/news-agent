@@ -1,37 +1,50 @@
+import anthropic
+from anthropic import AnthropicBedrockMantle
 import os
-import requests
 from dotenv import load_dotenv
 from collector_tv import collect_tv_news, format_tv_for_agent
 
 load_dotenv()
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_MODEL = "anthropic/claude-sonnet-5"
+client = AnthropicBedrockMantle(aws_region="us-east-1")
 
 PROMPT = """Ты — редактор узбекского телевизионного шоу-биз выпуска «Yulduzlar Dunyosidan» на LUX TV.
-Твоя задача — на основе присланных новостей собрать готовый выпуск: закадровый текст, источники, фото/видео рекомендации.
+Твоя задача — на основе предоставленных новостей собрать готовый выпуск: закадровый текст, источники, фото/видео рекомендации.
 
 ПАРАМЕТРЫ ВЫПУСКА:
-- Всего новостей: строго 10, без исключений
-- Слов на новость: 100-120 слов
-- Свежесть: приоритет последним 24 часам, при нехватке — бери более свежее из присланного
+- Слов на новость: 100–120 слов (50–60 секунд)
+- Всего новостей: 10
+- Свежесть: только за последние 24 часа
 
-РАЗРЕШЁННЫЕ ТЕМЫ (бери широко, без приоритета между собой):
-- Актёры и актрисы — их жизнь, новые роли, премьеры, интервью
-- Певцы и музыканты — новые песни, альбомы, туры, концерты
-- Режиссёры и продюсеры — новые проекты
-- Кино и сериалы — премьеры, трейлеры, продления, награды, фестивали
-- Индийское кино (Болливуд), Голливуд, K-pop, турецкие сериалы, узбекский шоу-бизнес
-- Скандалы, свадьбы, личная жизнь знаменитостей
-- Любые культурные события с участием известных личностей
+ТЕМАТИКА — брать ТОЛЬКО:
+- Индийское кино и Болливуд — премьеры, трейлеры, звёзды
+- Узбекский шоу-бизнес — певцы, актёры, блогеры, знаменитости
+- Мировой шоу-бизнес — Голливуд, K-pop, турецкие сериалы, звёзды
+- Кино и сериалы — Netflix, HBO, новые релизы, награды
+- Жизнь звёзд — скандалы, свадьбы, премьеры, интервью
+- Музыкальные новости — хиты, альбомы, концерты мировых звёзд
 
-АТРИБУЦИЯ — каждая новость начинается с фразы:
-Reuters ma'lumotiga ko'ra... / Rasmiy manbalar xabar berishicha... / Variety xabar berishicha...
+ЗАПРЕЩЁННЫЕ ТЕМЫ — не брать никогда:
+- Политика — выборы, правительство, законы, дипломатия
+- Спорт — кроме случаев когда спортсмен замешан в скандале или свадьбе
+- Экономика, финансы, бизнес-новости
+- Религия
+- Контент 18+
+- Криминал БЕЗ связи с известной личностью
+- Региональные новости без шоу-биз контекста
+
+ОТБОР НОВОСТЕЙ:
+- Выбирай самое резонансное и интересное зрителю
+- Нет жёсткого приоритета по географии — узбекское или мировое, главное ИНТЕРЕСНО
+- Если есть горячая мировая новость — она важнее слабой узбекской
+
+АТРИБУЦИЯ — каждая новость начинается с одной фразы:
+Reuters ma'lumotiga ko'ra... / Rasmiiy manbalar xabar berishicha... / AP agentligi xabar beradi...
 
 СТРУКТУРА ВЫПУСКА:
 ————————————————————————————
 [ЗАСТАВКА — 5 секунд]
+
 ОТКРЫТИЕ: «Yulduzlar Dunyosidan. Boshlaylik.»
 
 НОВОСТЬ 1
@@ -61,41 +74,38 @@ Reuters ma'lumotiga ko'ra... / Rasmiy manbalar xabar berishicha... / Variety xab
 🔗 Источник: [название источника + ссылка]
 ————————————————————————————
 
-ГЛАВНОЕ ПРАВИЛО:
-Присылай ТОЛЬКО готовый текст выпуска из 10 новостей строго в указанном формате. Никогда не пиши анализ, таблицы "подходит/не подходит", пояснения редактору или комментарии о нехватке материала."""
+## ТЕХНИЧЕСКИЕ ПАРАМЕТРЫ
+| Параметр | Значение |
+|---|---|
+| Общий хронометраж | ~1200 слов |
+| Новостей | 10 |
+| Хронометраж | 10 минут |
+
+## ИЗОХ МУҲАРРИР УЧУН:
+⚠️ Если среди новостей нет подходящего шоу-биз контента — напиши об этом явно и объясни почему каждая новость не подходит. Не составляй выпуск из неподходящих новостей."""
 
 def generate_tv_bulletin(news_text):
     import time
     for attempt in range(3):
         try:
-            response = requests.post(
-                OPENROUTER_URL,
-                headers={
-                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "model": OPENROUTER_MODEL,
-                    "max_tokens": 16000,
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": f"{PROMPT}\n\nВот новости для выпуска:\n\n{news_text}"
-                        }
-                    ]
-                },
-                timeout=120
-            )
-            response.raise_for_status()
-            result = response.json()
+            message = client.messages.create(
+        model="anthropic.claude-haiku-4-5",
+        max_tokens=4000,
+        messages=[
+            {
+                "role": "user",
+                "content": f"{PROMPT}\n\nВот новости для выпуска:\n\n{news_text}"
+            }
+        ]
+    )
             break
         except Exception as e:
-            if '429' in str(e) or 'overloaded' in str(e).lower() or '529' in str(e):
-                print(f'OpenRouter перегружен, попытка {attempt+1}/3, ждём 30 сек...')
+            if '529' in str(e) or 'overloaded' in str(e).lower():
+                print(f'Anthropic перегружен, попытка {attempt+1}/3, ждём 30 сек...')
                 time.sleep(30)
             else:
                 raise
-    return result["choices"][0]["message"]["content"]
+    return message.content[0].text
 
 def save_bulletin(bulletin):
     from datetime import datetime

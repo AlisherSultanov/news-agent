@@ -5,13 +5,6 @@ from datetime import datetime
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
 
 TV_SOURCES = [
-    {'name': 'Gazeta.uz', 'url': 'https://www.gazeta.uz/ru/rss/'},
-    {'name': 'Podrobno.uz', 'url': 'https://podrobno.uz/rss/'},
-    {'name': 'Uzdaily.uz', 'url': 'https://www.uzdaily.uz/en/rss'},
-    {'name': 'NUZ.uz', 'url': 'https://nuz.uz/feed'},
-    {'name': 'Kun.uz', 'url': 'https://kun.uz/news/rss'},
-    {'name': 'Daryo.uz', 'url': 'https://daryo.uz/feed'},
-    {'name': 'Uzbekistan Today', 'url': 'https://ut.uz/ru/rss/'},
     {'name': 'Variety', 'url': 'https://variety.com/feed/'},
     {'name': 'Billboard', 'url': 'https://www.billboard.com/feed/'},
     {'name': 'Hollywood Reporter', 'url': 'https://www.hollywoodreporter.com/feed/'},
