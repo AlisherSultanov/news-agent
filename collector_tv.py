@@ -14,6 +14,7 @@ TV_SOURCES = [
     {'name': 'Koimoi', 'url': 'https://www.koimoi.com/feed/'},
     {'name': 'Soompi', 'url': 'https://www.soompi.com/feed/'},
     {'name': 'Turkish Drama World', 'url': 'https://turkishdramaworld.com/feed/'},
+    {'name': "San'at Dunyosi", 'url': 'https://sanatdunyosi.uz/feed/'},
 ]
 
 
